@@ -64,16 +64,26 @@ export function ForecastSelector({
     };
   }, [measure, days.length]);
 
+  const skipInitialScrollRef = useRef(true);
+
   useEffect(() => {
-    // scroll active into view when selection changes via user
+    if (skipInitialScrollRef.current) {
+      skipInitialScrollRef.current = false;
+      return;
+    }
+    const track = trackRef.current;
     const btn = tabRefs.current[selectedIndex];
-    if (!btn) return;
-    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    btn.scrollIntoView({
-      behavior: prefersReduced ? "auto" : "smooth",
-      block: "nearest",
-      inline: "nearest",
-    });
+    if (!track || !btn) return;
+    const left = btn.offsetLeft;
+    const right = left + btn.offsetWidth;
+    const visibleLeft = track.scrollLeft;
+    const visibleRight = visibleLeft + track.clientWidth;
+    let target: number | null = null;
+    if (left < visibleLeft) target = Math.max(0, left - 8);
+    else if (right > visibleRight) target = right - track.clientWidth + 8;
+    if (target === null) return;
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    track.scrollTo({ left: target, behavior: reduced ? "auto" : "smooth" });
   }, [selectedIndex]);
 
   return (
@@ -97,6 +107,7 @@ export function ForecastSelector({
                 }}
                 role="tab"
                 aria-selected={active}
+                onMouseDown={(e) => e.preventDefault()}
                 onClick={() => handleSelect(i)}
                 className={cn(
                   "relative z-[2] shrink-0 rounded-full px-[12px] py-[7px] text-[12.5px] font-[600] leading-none tracking-[-0.01em] whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0F172A]/20",

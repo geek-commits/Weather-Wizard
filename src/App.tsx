@@ -12,10 +12,10 @@ export default function App() {
     <div className="min-h-screen bg-white">
       {/* generous whitespace - widget is the product */}
       <main className="mx-auto flex min-h-screen max-w-[880px] flex-col items-center px-4 py-10 md:py-14">
-        {/* brand entrance — Premium 1.8s staged (wave→swoosh→wordmark→sweep), sessionOnce + reduced-motion */}
-        <div className="mb-8 flex w-full flex-col items-center">
+        {/* brand entrance — Premium 1.8s staged (wave→swoosh→wordmark→sweep), always + reduced-motion */}
+        <div className="mb-8 flex min-h-[76px] w-full shrink-0 flex-col items-center justify-center">
           <h1 className="sr-only">Weather Wizard</h1>
-          <WeatherWizardEntrance maxWidth={380} mode="sessionOnce" />
+          <WeatherWizardEntrance maxWidth={380} mode="always" />
         </div>
 
         <div className="flex w-full flex-col items-center gap-6">
