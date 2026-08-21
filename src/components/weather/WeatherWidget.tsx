@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import type { ForecastDay, TemperatureUnit, WeatherCondition, WeatherStatus } from "../../types/weather";
 import { WeatherHeader } from "./WeatherHeader";
 import { WeatherScene } from "./WeatherScene";
@@ -39,6 +40,25 @@ export function WeatherWidget({
   const displayCountry = country;
   const displayDate = selected?.date ?? new Date();
 
+  // Day-aware scene transition metadata
+  const sceneKey = selected ? `${selected.date.toISOString()}-${selected.condition}` : `empty-${selectedIndex}`;
+  const [sceneDirection, setSceneDirection] = useState<1 | -1 | 0>(0);
+  const prevIndexRef = useRef(selectedIndex);
+  const isFirstSceneRef = useRef(true);
+  useEffect(() => {
+    if (isEmpty || isError) return;
+    if (isFirstSceneRef.current) {
+      isFirstSceneRef.current = false;
+      prevIndexRef.current = selectedIndex;
+      setSceneDirection(0);
+      return;
+    }
+    if (selectedIndex > prevIndexRef.current) setSceneDirection(1);
+    else if (selectedIndex < prevIndexRef.current) setSceneDirection(-1);
+    else setSceneDirection(0);
+    prevIndexRef.current = selectedIndex;
+  }, [selectedIndex, isEmpty, isError]);
+
   return (
     <div
       role="region"
@@ -48,9 +68,9 @@ export function WeatherWidget({
       className="relative w-[min(100%,380px)] overflow-hidden rounded-[30px] border border-[rgba(15,23,42,0.06)] bg-[#F3F4F8] shadow-[0_20px_60px_rgba(15,23,42,0.08),0_8px_24px_rgba(15,23,42,0.06),inset_0_1px_0_rgba(255,255,255,0.9)]"
       style={{ minHeight: 560 }}
     >
-      {/* Scene layer - upper 62% */}
+      {/* Scene layer - upper 62% — day-aware, direction-aware */}
       <div className="absolute inset-x-0 top-0 h-[62%]">
-        {!isEmpty && !isError ? <WeatherScene condition={sceneCondition} /> : null}
+        {!isEmpty && !isError ? <WeatherScene condition={sceneCondition} sceneKey={sceneKey} direction={sceneDirection} /> : null}
         {/* empty/error fallback soft wash */}
         {(isEmpty || isError) && (
           <div className="absolute inset-0 bg-gradient-to-b from-[#F1F5F9] via-[#EDEEF3] to-[#F3F4F8]" />

@@ -32,6 +32,13 @@ body {
   min-height: 100vh;
 }
 
+/* Weather Wizard — Scene transitions */
+@keyframes ww-sceneInitialFade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes ww-sceneInForward { from { opacity: 0; transform: translateX(12px) scale(1.02); filter: blur(5px); } to { opacity: 1; transform: translateX(0) scale(1); filter: blur(0); } }
+@keyframes ww-sceneInBackward { from { opacity: 0; transform: translateX(-12px) scale(1.02); filter: blur(5px); } to { opacity: 1; transform: translateX(0) scale(1); filter: blur(0); } }
+@keyframes ww-sceneOutForward { from { opacity: 1; transform: translateX(0) scale(1); filter: blur(0); } to { opacity: 0; transform: translateX(-10px) scale(1.015); filter: blur(4px); } }
+@keyframes ww-sceneOutBackward { from { opacity: 1; transform: translateX(0) scale(1); filter: blur(0); } to { opacity: 0; transform: translateX(10px) scale(1.015); filter: blur(4px); } }
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -40,4 +47,5 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+  .ww-scene-reduced { animation: ww-sceneInitialFade 120ms ease-out both !important; }
 }

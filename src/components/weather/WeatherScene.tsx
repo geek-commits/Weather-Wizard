@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from "react";
 import type { WeatherCondition } from "../../types/weather";
 import { SunnyScene } from "./WeatherScene/SunnyScene";
 import { PartlyCloudyScene } from "./WeatherScene/PartlyCloudyScene";
@@ -15,33 +16,114 @@ const sceneMap: Record<WeatherCondition, React.ComponentType> = {
   fog: FogScene,
 };
 
-export function WeatherScene({ condition }: { condition: WeatherCondition }) {
+type SceneSnapshot = { key: string; condition: WeatherCondition };
+
+export function WeatherScene({
+  condition,
+  sceneKey,
+  direction = 0,
+}: {
+  condition: WeatherCondition;
+  sceneKey: string;
+  direction?: 1 | -1 | 0;
+}) {
+  const [current, setCurrent] = useState<SceneSnapshot>({ key: sceneKey, condition });
+  const [outgoing, setOutgoing] = useState<SceneSnapshot | null>(null);
+  const [activeDirection, setActiveDirection] = useState<1 | -1 | 0>(0);
+  const [isInitial, setIsInitial] = useState(true);
+  const timeoutRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (isInitial) {
+      setCurrent({ key: sceneKey, condition });
+      setIsInitial(false);
+      return;
+    }
+    if (sceneKey === current.key) {
+      if (condition !== current.condition) {
+        setOutgoing(current);
+        setCurrent({ key: sceneKey, condition });
+        setActiveDirection(direction);
+        if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
+        timeoutRef.current = window.setTimeout(() => setOutgoing(null), 560);
+      }
+      return;
+    }
+    // Day change — max 2 layers, rapid discards older outgoing
+    setOutgoing(current);
+    setCurrent({ key: sceneKey, condition });
+    setActiveDirection(direction);
+    if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
+    timeoutRef.current = window.setTimeout(() => setOutgoing(null), 560);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sceneKey]);
+
+  useEffect(() => {
+    if (!isInitial && sceneKey === current.key && condition !== current.condition) {
+      setCurrent({ key: sceneKey, condition });
+    }
+  }, [condition, sceneKey, current.key, current.condition, isInitial]);
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
+    };
+  }, []);
+
+  const CurrentComponent = sceneMap[current.condition];
+  const OutgoingComponent = outgoing ? sceneMap[outgoing.condition] : null;
+  const prefersReduced = typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (isInitial) {
+    return (
+      <div className="absolute inset-0 overflow-hidden rounded-t-[30px]">
+        <div
+          key={current.key}
+          className="absolute inset-0"
+          style={{ animation: prefersReduced ? undefined : "ww-sceneInitialFade 150ms ease-out both" }}
+        >
+          <CurrentComponent />
+        </div>
+      </div>
+    );
+  }
+
+  const forward = activeDirection >= 0;
+
   return (
     <div className="absolute inset-0 overflow-hidden rounded-t-[30px]">
-      {/* Premium triple-layer: Primary scale+opacity 520ms signature, Secondary blur 420ms, Ambient glow */}
-      {(Object.keys(sceneMap) as WeatherCondition[]).map((key) => {
-        const Component = sceneMap[key];
-        const active = key === condition;
-        return (
-          <div
-            key={key}
-            aria-hidden={!active}
-            className="absolute inset-0"
-            style={{
-              opacity: active ? 1 : 0,
-              transform: active ? "scale(1) translateY(0)" : "scale(1.02) translateY(2px)",
-              filter: active ? "blur(0px)" : "blur(6px)",
-              pointerEvents: active ? "auto" : "none",
-              transitionProperty: "opacity, transform, filter",
-              transitionDuration: active ? "520ms, 520ms, 420ms" : "420ms, 420ms, 320ms",
-              transitionTimingFunction: "cubic-bezier(0.22,1,0.36,1), cubic-bezier(0.4,0,0.2,1), ease-out",
-              willChange: "opacity, transform, filter",
-            }}
-          >
-            <Component />
-          </div>
-        );
-      })}
+      {outgoing && OutgoingComponent && (
+        <div
+          key={`out-${outgoing.key}`}
+          aria-hidden
+          className="absolute inset-0"
+          style={{
+            animation: prefersReduced
+              ? "ww-sceneInitialFade 120ms ease-out both reverse"
+              : `ww-sceneOut${forward ? "Forward" : "Backward"} 520ms cubic-bezier(0.22,1,0.36,1) forwards`,
+            willChange: "opacity, transform, filter",
+          }}
+          onAnimationEnd={() => setOutgoing(null)}
+        >
+          <OutgoingComponent />
+        </div>
+      )}
+      <div
+        key={current.key}
+        className="absolute inset-0"
+        style={
+          outgoing
+            ? {
+                animation: prefersReduced
+                  ? "ww-sceneInitialFade 150ms ease-out both"
+                  : `ww-sceneIn${forward ? "Forward" : "Backward"} 520ms cubic-bezier(0.22,1,0.36,1) forwards`,
+                willChange: "opacity, transform, filter",
+              }
+            : undefined
+        }
+      >
+        <CurrentComponent />
+      </div>
     </div>
   );
 }
