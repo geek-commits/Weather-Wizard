@@ -1,15 +1,15 @@
 import { test, expect } from "@playwright/test";
 
 test.describe("Custom Cursor — Desktop fine-pointer", () => {
-  test("applies 48x48 arrowhead SVG cursor 4 0 and restores input", async ({ page }) => {
+  test("applies 32x32 arrowhead SVG cursor 3 0 and restores input", async ({ page }) => {
     await page.goto("/");
     const html = page.locator("html");
     await expect(html).toHaveAttribute("data-custom-cursor", "true");
 
-    // Verify data URI contains encoded SVG with hotspot 4 0
+    // Verify data URI contains encoded SVG with hotspot 3 0
     const cursorVar = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--custom-cursor"));
     expect(cursorVar).toContain("data:image/svg+xml");
-    expect(cursorVar).toContain("4 0");
+    expect(cursorVar).toContain("3 0");
     // Check computed cursor on body includes custom
     const bodyCursor = await page.evaluate(() => getComputedStyle(document.body).cursor);
     expect(bodyCursor).not.toBe("auto");
@@ -23,14 +23,14 @@ test.describe("Custom Cursor — Desktop fine-pointer", () => {
     });
     expect(inputCursor).not.toContain("data:image/svg+xml");
 
-    // Verify new arrowhead SVG: 48x48 viewBox 24, black fill, no white stroke/shadow
+    // Verify new arrowhead SVG: 32x32 viewBox 24, black fill, no white stroke/shadow
     const svgDecoded = await page.evaluate(() => {
       const v = getComputedStyle(document.documentElement).getPropertyValue("--custom-cursor");
       const m = v.match(/data:image\/svg\+xml,([^)]+)/);
       if (!m) return null;
       return decodeURIComponent(m[1]);
     });
-    expect(svgDecoded).toContain("48");
+    expect(svgDecoded).toContain("32");
     expect(svgDecoded).toContain("24");
     expect(svgDecoded).toContain("M4.5.79");
     expect(svgDecoded).toContain("#000");
