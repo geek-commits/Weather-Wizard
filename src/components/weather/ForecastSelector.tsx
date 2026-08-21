@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { ForecastDay } from "../../types/weather";
 import { cn } from "../../lib/utils";
+import { ForecastGlassThumb } from "./ForecastGlassThumb";
 
 type ThumbGeometry = { x: number; width: number; height: number };
 
@@ -74,27 +75,7 @@ export function ForecastSelector({
           className="relative flex items-center gap-[2px] overflow-x-auto scrollbar-none py-1"
           style={{ scrollbarWidth: "none" }}
         >
-          {/* Phase 1 debug thumb — geometry only, inside scrollable content */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute top-1/2 -translate-y-1/2 rounded-full"
-            style={{
-              left: 0,
-              width: thumb.width,
-              height: thumb.height,
-              transform: `translate3d(${thumb.x}px, -50%, 0)`,
-              opacity: hasMeasured ? 1 : 0,
-              visibility: hasMeasured ? "visible" : "hidden",
-              background: "rgba(255,255,255,0.55)",
-              border: "1px solid rgba(255,255,255,0.9)",
-              boxShadow: "0 8px 24px rgba(15,23,42,0.08), 0 2px 8px rgba(15,23,42,0.06)",
-              borderRadius: 9999,
-              transition: hasMeasured
-                ? "transform 460ms cubic-bezier(0.22,1,0.36,1), width 420ms cubic-bezier(0.22,1,0.36,1), opacity 150ms ease-out"
-                : undefined,
-              willChange: "transform, width",
-            }}
-          />
+          <ForecastGlassThumb x={thumb.x} width={thumb.width} height={thumb.height} hasMeasured={hasMeasured} />
           {days.map((d, i) => {
             const active = i === selectedIndex;
             return (
