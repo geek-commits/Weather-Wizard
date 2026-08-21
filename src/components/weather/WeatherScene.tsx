@@ -100,7 +100,7 @@ export function WeatherScene({
           style={{
             animation: prefersReduced
               ? "ww-sceneInitialFade 120ms ease-out both reverse"
-              : `ww-sceneOut${forward ? "Forward" : "Backward"} 520ms cubic-bezier(0.22,1,0.36,1) forwards`,
+              : `ww-sceneOut${forward ? "Forward" : "Backward"} 520ms cubic-bezier(0.3,0,1,1) forwards`,
             willChange: "opacity, transform, filter",
           }}
           onAnimationEnd={() => setOutgoing(null)}
