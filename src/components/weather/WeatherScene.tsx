@@ -18,7 +18,7 @@ const sceneMap: Record<WeatherCondition, React.ComponentType> = {
 export function WeatherScene({ condition }: { condition: WeatherCondition }) {
   return (
     <div className="absolute inset-0 overflow-hidden rounded-t-[30px]">
-      {/* crossfade layers */}
+      {/* Premium triple-layer: Primary scale+opacity 520ms signature, Secondary blur 420ms, Ambient glow */}
       {(Object.keys(sceneMap) as WeatherCondition[]).map((key) => {
         const Component = sceneMap[key];
         const active = key === condition;
@@ -26,13 +26,16 @@ export function WeatherScene({ condition }: { condition: WeatherCondition }) {
           <div
             key={key}
             aria-hidden={!active}
-            className="absolute inset-0 transition-all duration-[520ms]"
+            className="absolute inset-0"
             style={{
               opacity: active ? 1 : 0,
-              transform: active ? "scale(1)" : "scale(1.02)",
-              filter: active ? "blur(0px)" : "blur(4px)",
+              transform: active ? "scale(1) translateY(0)" : "scale(1.02) translateY(2px)",
+              filter: active ? "blur(0px)" : "blur(6px)",
               pointerEvents: active ? "auto" : "none",
-              transitionTimingFunction: "cubic-bezier(0.2, 0.8, 0.2, 1)",
+              transitionProperty: "opacity, transform, filter",
+              transitionDuration: active ? "520ms, 520ms, 420ms" : "420ms, 420ms, 320ms",
+              transitionTimingFunction: "cubic-bezier(0.22,1,0.36,1), cubic-bezier(0.4,0,0.2,1), ease-out",
+              willChange: "opacity, transform, filter",
             }}
           >
             <Component />
