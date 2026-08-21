@@ -82,6 +82,22 @@ export function formatDayLabel(date: Date, short = false): string {
   return `${days[date.getDay()]}, ${months[date.getMonth()]} ${date.getDate()}`;
 }
 
+export function formatCityDayLabel(cityLocalDate: Date, short = false): string {
+  // cityLocalDate is created as new Date((dt + tz)*1000), so UTC getters give city local
+  const days = short
+    ? ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+    : ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  if (short) return `${days[cityLocalDate.getUTCDay()]} ${cityLocalDate.getUTCDate()}`;
+  return `${days[cityLocalDate.getUTCDay()]}, ${months[cityLocalDate.getUTCMonth()]} ${cityLocalDate.getUTCDate()}`;
+}
+
+export function formatCityHeaderDate(cityLocalDate: Date): string {
+  const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  return `${days[cityLocalDate.getUTCDay()]}, ${months[cityLocalDate.getUTCMonth()]} ${cityLocalDate.getUTCDate()}`;
+}
+
 export function formatHeaderDate(date: Date): string {
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];

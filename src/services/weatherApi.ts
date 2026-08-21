@@ -1,5 +1,5 @@
 import type { ForecastDay, WeatherCondition, WeatherData } from "../types/weather";
-import { formatDayLabel, mapOpenWeatherToCondition } from "../lib/weatherMapping";
+import { formatCityDayLabel, formatDayLabel, mapOpenWeatherToCondition } from "../lib/weatherMapping";
 
 const BASE = "https://api.openweathermap.org/data/2.5";
 
@@ -21,11 +21,12 @@ interface OWMWeatherResponse {
 interface OWMForecastResponse {
   list: Array<{
     dt: number;
+    dt_txt: string;
     main: { temp: number; humidity: number };
     weather: Array<{ main: string; description: string; icon: string }>;
     wind: { speed: number };
   }>;
-  city: { name: string; country: string };
+  city: { name: string; country: string; timezone: number };
 }
 
 export async function getWeather(city: string): Promise<WeatherData> {
@@ -67,12 +68,13 @@ export async function getForecast(city: string): Promise<ForecastDay[]> {
     throw new Error("Forecast unavailable.");
   }
   const data: OWMForecastResponse = await res.json();
+  const tz = data.city.timezone ?? 0;
 
-  // Group by date (local)
+  // Group by city-local date (dt is UTC seconds, add timezone offset)
   const byDate = new Map<string, typeof data.list>();
   for (const item of data.list) {
-    const d = new Date(item.dt * 1000);
-    const key = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+    const local = new Date((item.dt + tz) * 1000);
+    const key = `${local.getUTCFullYear()}-${local.getUTCMonth()}-${local.getUTCDate()}`;
     if (!byDate.has(key)) byDate.set(key, []);
     byDate.get(key)!.push(item);
   }
@@ -81,21 +83,46 @@ export async function getForecast(city: string): Promise<ForecastDay[]> {
   let idx = 0;
   for (const [, items] of byDate) {
     if (idx >= 5) break;
-    // pick midday item or middle
-    const mid = items[Math.floor(items.length / 2)] ?? items[0];
-    const w = mid.weather[0];
-    const condition: WeatherCondition = mapOpenWeatherToCondition(w.main, w.description, w.icon);
-    const date = new Date(mid.dt * 1000);
+
+    // Most frequent condition for the day (mode), not just mid item
+    const freq = new Map<WeatherCondition, { count: number; sample: (typeof items)[number] }>();
+    for (const it of items) {
+      const w = it.weather[0];
+      const c = mapOpenWeatherToCondition(w.main, w.description, w.icon);
+      const entry = freq.get(c);
+      if (!entry) freq.set(c, { count: 1, sample: it });
+      else entry.count++;
+    }
+    let best: WeatherCondition | null = null;
+    let bestCount = -1;
+    let bestSample: (typeof items)[number] = items[Math.floor(items.length / 2)] ?? items[0];
+    for (const [c, { count, sample }] of freq) {
+      if (count > bestCount) {
+        bestCount = count;
+        best = c;
+        bestSample = sample;
+      }
+    }
+    const condition = best ?? mapOpenWeatherToCondition(bestSample.weather[0].main, bestSample.weather[0].description, bestSample.weather[0].icon);
+    const w = bestSample.weather[0];
+
+    // City-local date for label (use UTC getters on offset date)
+    const midLocal = new Date((bestSample.dt + tz) * 1000);
+    // Create a Date whose local getters match city local (trick: keep UTC)
+    const date = new Date(Date.UTC(midLocal.getUTCFullYear(), midLocal.getUTCMonth(), midLocal.getUTCDate(), 12, 0, 0));
     const avgTemp = Math.round(items.reduce((a, b) => a + b.main.temp, 0) / items.length);
+    // Format using UTC to preserve city day/month
+    const label = formatCityDayLabel(midLocal, false);
+    const shortLabel = formatCityDayLabel(midLocal, true);
     days.push({
       date,
-      label: formatDayLabel(date, false),
-      shortLabel: formatDayLabel(date, true),
+      label,
+      shortLabel,
       temperature: avgTemp,
       condition,
       description: w.description,
       humidity: Math.round(items.reduce((a, b) => a + b.main.humidity, 0) / items.length),
-      windSpeed: mid.wind.speed,
+      windSpeed: bestSample.wind.speed,
     });
     idx++;
   }
