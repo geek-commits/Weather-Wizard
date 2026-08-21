@@ -32,6 +32,17 @@ body {
   min-height: 100vh;
 }
 
+/* Custom cursor — desktop fine-pointer only */
+@media (hover: hover) and (pointer: fine) {
+  html[data-custom-cursor],
+  html[data-custom-cursor] * {
+    cursor: var(--custom-cursor) !important;
+  }
+  html[data-custom-cursor] :is(input, textarea, select, [contenteditable="true"]) {
+    cursor: revert !important;
+  }
+}
+
 /* Weather Wizard — Scene transitions */
 @keyframes ww-sceneInitialFade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes ww-sceneInForward { from { opacity: 0; transform: translateX(12px) scale(1.02); filter: blur(5px); } to { opacity: 1; transform: translateX(0) scale(1); filter: blur(0); } }

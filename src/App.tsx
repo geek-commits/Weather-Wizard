@@ -2,8 +2,10 @@ import { CitySearch } from "./components/search/CitySearch";
 import { WeatherWidget } from "./components/weather/WeatherWidget";
 import { WeatherWizardEntrance } from "./components/brand/WeatherWizardEntrance";
 import { useWeather } from "./hooks/useWeather";
+import { useCustomCursor } from "./hooks/useCustomCursor";
 
 export default function App() {
+  useCustomCursor(true);
   const { city, country, forecast, selectedIndex, setSelectedIndex, status, error, unit, setUnit, searchWeather } = useWeather();
 
   const hasKey = !!import.meta.env.VITE_OPENWEATHER_API_KEY;
