@@ -39,6 +39,19 @@ body {
 @keyframes ww-sceneOutForward { from { opacity: 1; transform: translateX(0) scale(1); filter: blur(0); } to { opacity: 0; transform: translateX(-10px) scale(1.015); filter: blur(4px); } }
 @keyframes ww-sceneOutBackward { from { opacity: 1; transform: translateX(0) scale(1); filter: blur(0); } to { opacity: 0; transform: translateX(10px) scale(1.015); filter: blur(4px); } }
 
+/* Weather Wizard — Ambient weather motion */
+@keyframes ww-sun-float { 0%,100% { transform: translateY(-2px) scale(1); } 50% { transform: translateY(2px) scale(1.012); } }
+@keyframes ww-sun-glow { 0%,100% { opacity:0.52; transform: scale(0.98); } 50% { opacity:0.64; transform: scale(1.04); } }
+@keyframes ww-cloud-drift-slow { 0%,100% { transform: translateX(-4px); } 50% { transform: translateX(6px); } }
+@keyframes ww-cloud-drift-reverse { 0%,100% { transform: translateX(6px); } 50% { transform: translateX(-4px); } }
+@keyframes ww-rain-fall-a { 0% { transform: translate3d(0,-18px,0); opacity:0; } 10% { opacity:0.9; } 90% { opacity:0.9; } 100% { transform: translate3d(-4px,30px,0); opacity:0; } }
+@keyframes ww-rain-fall-b { 0% { transform: translate3d(0,-18px,0); opacity:0; } 10% { opacity:0.7; } 90% { opacity:0.7; } 100% { transform: translate3d(-3px,28px,0); opacity:0; } }
+@keyframes ww-lightning-flash { 0%,72%,82%,100% { opacity:0.10; } 74% { opacity:0.48; } 76% { opacity:0.12; } 79% { opacity:0.34; } }
+@keyframes ww-snow-fall-a { 0% { transform: translateY(-8px) translateX(0); opacity:0; } 10% { opacity:0.9; } 90% { opacity:0.9; } 100% { transform: translateY(34px) translateX(5px); opacity:0; } }
+@keyframes ww-snow-fall-b { 0% { transform: translateY(-10px) translateX(-2px); opacity:0; } 10% { opacity:0.7; } 90% { opacity:0.7; } 100% { transform: translateY(30px) translateX(3px); opacity:0; } }
+@keyframes ww-fog-drift-a { 0%,100% { transform: translateX(-6px); opacity:0.52; } 50% { transform: translateX(8px); opacity:0.62; } }
+@keyframes ww-fog-drift-b { 0%,100% { transform: translateX(7px); opacity:0.45; } 50% { transform: translateX(-5px); opacity:0.58; } }
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

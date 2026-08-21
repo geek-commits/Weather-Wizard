@@ -7,8 +7,11 @@ export function PartlyCloudyScene() {
           background: `linear-gradient(180deg, #EFF6FF 0%, #DBEAFE 42%, #FFF1DC 76%, #FFD8A8 100%)`,
         }}
       />
-      {/* sun peek behind cloud - right side */}
-      <div className="absolute left-[58%] top-[32%] -translate-x-1/2 -translate-y-1/2">
+      {/* sun peek behind cloud - right side — opposite drift for parallax */}
+      <div
+        className="absolute left-[58%] top-[32%] -translate-x-1/2 -translate-y-1/2"
+        style={{ animation: "ww-cloud-drift-reverse 11s ease-in-out infinite alternate" }}
+      >
         <div
           className="absolute rounded-full blur-[36px] opacity-50"
           style={{
@@ -31,8 +34,13 @@ export function PartlyCloudyScene() {
         />
       </div>
 
-      {/* soft cloud composition - left/center */}
-      <svg viewBox="0 0 400 220" className="absolute bottom-[28%] left-1/2 -translate-x-1/2 w-[118%] h-[52%]" aria-hidden>
+      {/* soft cloud composition - left/center — slow drift */}
+      <svg
+        viewBox="0 0 400 220"
+        className="absolute bottom-[28%] left-1/2 -translate-x-1/2 w-[118%] h-[52%]"
+        aria-hidden
+        style={{ animation: "ww-cloud-drift-slow 12.5s ease-in-out infinite alternate" }}
+      >
         <defs>
           <radialGradient id="pc-cloud" cx="50%" cy="40%">
             <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.98" />

@@ -8,20 +8,21 @@ export function SunnyScene() {
           background: `radial-gradient(120% 90% at 50% 35%, #FFF1D6 0%, #FFE7B8 38%, #FFD59A 62%, #FFB870 88%)`,
         }}
       />
-      {/* large sun - partially behind info layer */}
+      {/* large sun - partially behind info layer — ambient float + glow */}
       <div className="absolute left-1/2 top-[38%] -translate-x-1/2 -translate-y-1/2">
-        {/* outer glow */}
+        {/* outer glow — breathing */}
         <div
-          className="absolute rounded-full blur-[42px] opacity-60"
+          className="absolute rounded-full blur-[42px]"
           style={{
             width: 340,
             height: 340,
             left: -170,
             top: -170,
             background: "radial-gradient(circle, #FF8C2E 0%, #FFB86A 40%, transparent 72%)",
+            animation: "ww-sun-glow 6s ease-in-out infinite alternate",
           }}
         />
-        {/* sun body */}
+        {/* sun body — slow float */}
         <div
           className="relative rounded-full"
           style={{
@@ -31,6 +32,7 @@ export function SunnyScene() {
             marginTop: -124,
             background: "radial-gradient(circle at 32% 30%, #FFF7CC 0%, #FFD07A 22%, #FF8C2E 58%, #F97316 78%)",
             boxShadow: "0 0 80px rgba(251,146,60,0.35), inset 0 1px 0 rgba(255,255,255,0.6)",
+            animation: "ww-sun-float 8.5s ease-in-out infinite alternate",
           }}
         >
           {/* subtle highlight */}

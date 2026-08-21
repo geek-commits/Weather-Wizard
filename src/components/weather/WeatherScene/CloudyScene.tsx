@@ -7,13 +7,21 @@ export function CloudyScene() {
           background: `linear-gradient(180deg, #F1F5F9 0%, #E2E8F0 38%, #E8EEF6 72%, #F3F4F8 100%)`,
         }}
       />
-      {/* subtle top glow */}
+      {/* subtle top glow — slow reverse */}
       <div
         className="absolute left-1/2 top-[18%] -translate-x-1/2 w-[86%] h-[56%] rounded-[40px] blur-[32px] opacity-30"
-        style={{ background: "radial-gradient(ellipse at 50% 30%, #FFFFFF 0%, transparent 70%)" }}
+        style={{
+          background: "radial-gradient(ellipse at 50% 30%, #FFFFFF 0%, transparent 70%)",
+          animation: "ww-cloud-drift-reverse 17s ease-in-out infinite alternate",
+        }}
       />
 
-      <svg viewBox="0 0 400 240" className="absolute bottom-[26%] left-1/2 -translate-x-1/2 w-[124%] h-[58%]" aria-hidden>
+      <svg
+        viewBox="0 0 400 240"
+        className="absolute bottom-[26%] left-1/2 -translate-x-1/2 w-[124%] h-[58%]"
+        aria-hidden
+        style={{ animation: "ww-cloud-drift-slow 14s ease-in-out infinite alternate" }}
+      >
         <defs>
           <radialGradient id="c-cloud1" cx="40%" cy="35%">
             <stop offset="0%" stopColor="#FFFFFF" />

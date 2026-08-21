@@ -8,8 +8,8 @@ export function RainScene() {
         }}
       />
 
-      {/* cloud base */}
-      <svg viewBox="0 0 400 200" className="absolute bottom-[40%] left-1/2 -translate-x-1/2 w-[118%] h-[46%]" aria-hidden>
+      {/* cloud base — slow drift */}
+      <svg viewBox="0 0 400 200" className="absolute bottom-[40%] left-1/2 -translate-x-1/2 w-[118%] h-[46%]" aria-hidden style={{ animation: "ww-cloud-drift-slow 12s ease-in-out infinite alternate" }}>
         <defs>
           <radialGradient id="r-cloud" cx="50%" cy="38%">
             <stop offset="0%" stopColor="#F8FAFC" />
@@ -27,9 +27,9 @@ export function RainScene() {
         </g>
       </svg>
 
-      {/* rain streaks - subtle, desaturated blue */}
-      <svg viewBox="0 0 400 260" className="absolute bottom-[8%] left-1/2 -translate-x-1/2 w-[92%] h-[52%] opacity-[0.38]" aria-hidden>
-        <g stroke="#64748B" strokeWidth="1.6" strokeLinecap="round" opacity="0.9">
+      {/* rain streaks — falling with wind */}
+      <svg viewBox="0 0 400 260" className="absolute bottom-[8%] left-1/2 -translate-x-1/2 w-[92%] h-[52%] opacity-[0.38] overflow-visible" aria-hidden>
+        <g stroke="#64748B" strokeWidth="1.6" strokeLinecap="round" opacity="0.9" style={{ animation: "ww-rain-fall-a 800ms linear infinite" }}>
           {/* multiple angled rain lines */}
           {[
             [48, 22, 42, 44],
@@ -84,7 +84,7 @@ export function StormScene() {
           background: `linear-gradient(180deg, #E0E7FF 0%, #C7D2FE 34%, #A5B4FC 62%, #E0E7FF 82%, #F3F4F8 100%)`,
         }}
       />
-      <svg viewBox="0 0 400 200" className="absolute bottom-[42%] left-1/2 -translate-x-1/2 w-[118%] h-[46%]" aria-hidden>
+      <svg viewBox="0 0 400 200" className="absolute bottom-[42%] left-1/2 -translate-x-1/2 w-[118%] h-[46%]" aria-hidden style={{ animation: "ww-cloud-drift-slow 10s ease-in-out infinite alternate" }}>
         <defs>
           <radialGradient id="s-cloud" cx="50%" cy="38%">
             <stop offset="0%" stopColor="#E0E7FF" />
@@ -100,12 +100,12 @@ export function StormScene() {
           <ellipse cx="292" cy="98" rx="78" ry="46" fill="url(#s-cloud)" />
         </g>
       </svg>
-      {/* lightning subtle */}
-      <svg viewBox="0 0 400 260" className="absolute inset-0 w-full h-full opacity-20" aria-hidden>
+      {/* lightning — deterministic flash 6.5s */}
+      <svg viewBox="0 0 400 260" className="absolute inset-0 w-full h-full" aria-hidden style={{ animation: "ww-lightning-flash 6.5s ease-in-out infinite" }}>
         <path d="M208 88 L195 122 L206 122 L192 158 L214 126 L202 126 Z" fill="#FACC15" style={{ filter: "blur(0.5px)" }} />
       </svg>
-      <svg viewBox="0 0 400 260" className="absolute bottom-[8%] left-1/2 -translate-x-1/2 w-[92%] h-[52%] opacity-[0.32]" aria-hidden>
-        <g stroke="#4338CA" strokeWidth="1.4" strokeLinecap="round">
+      <svg viewBox="0 0 400 260" className="absolute bottom-[8%] left-1/2 -translate-x-1/2 w-[92%] h-[52%] opacity-[0.32] overflow-visible" aria-hidden>
+        <g stroke="#4338CA" strokeWidth="1.4" strokeLinecap="round" style={{ animation: "ww-rain-fall-a 720ms linear infinite" }}>
           {Array.from({ length: 12 }).map((_, i) => (
             <line key={i} x1={55 + i * 28} y1={22 + (i % 3) * 6} x2={49 + i * 28} y2={44 + (i % 3) * 6} />
           ))}
