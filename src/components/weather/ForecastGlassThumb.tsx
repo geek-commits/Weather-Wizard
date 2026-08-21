@@ -49,10 +49,8 @@ export function ForecastGlassThumb({ x, width, height, radius = 9999, disabled, 
           background: "rgba(255,255,255,0.28)",
           boxShadow: "inset 0 1px 0 rgba(255,255,255,0.92), inset 0 -1px 0 rgba(255,255,255,0.18), 0 6px 18px rgba(15,23,42,0.055)",
           border: "1px solid rgba(255,255,255,0.72)",
-          willChange: "transform, width",
-          transition: hasMeasured
-            ? "transform 460ms cubic-bezier(0.22,1,0.36,1), width 420ms cubic-bezier(0.22,1,0.36,1), opacity 150ms ease-out"
-            : undefined,
+          willChange: "transform, opacity",
+          transition: hasMeasured ? "transform 460ms cubic-bezier(0.22,1,0.36,1), opacity 150ms ease-out" : undefined,
         }}
       >
         {/* Refraction / blur layer — tuned 9px 1.03, ambient motion handled in WeatherScene */}

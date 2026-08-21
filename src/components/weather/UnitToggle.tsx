@@ -34,7 +34,7 @@ export function UnitToggle({
             aria-label={`Switch to ${label}`}
             onClick={() => handleChange(u)}
             className={cn(
-              "min-w-[36px] px-[10px] py-[4px] rounded-full text-[13px] font-[600] leading-none tracking-tight transition-all duration-200",
+              "min-w-[36px] px-[10px] py-[4px] rounded-full text-[13px] font-[600] leading-none tracking-tight transition-[background-color,color,box-shadow,transform] duration-200 ease-out",
               active
                 ? "bg-white text-[#0F172A] shadow-[0_1px_6px_rgba(15,23,42,0.10),0_1px_2px_rgba(15,23,42,0.08)]"
                 : "bg-transparent text-[#94A3B8] hover:text-[#64748B]"

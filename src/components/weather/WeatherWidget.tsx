@@ -136,7 +136,7 @@ export function WeatherWidget({
 
         {/* Success info */}
         {!isLoading && !isError && selected && (
-          <div className="transition-all duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)]">
+          <div className="transition-[opacity,transform] duration-300 ease-[cubic-bezier(0.2,0.8,0.2,1)]">
             <WeatherInformation
               temperature={selected.temperature}
               condition={selected.condition}
