@@ -40,19 +40,11 @@ export default function App() {
             onUnitChange={setUnit}
             onRetry={() => searchWeather(city)}
           />
-
-          <p className="max-w-[360px] text-center text-[11px] leading-[1.6] tracking-wide text-[#94A3B8]">
-            Visual reference: Inspora Weather Widget by{" "}
-            <a href="https://www.inspora.design/posts/4-3" target="_blank" rel="noreferrer" className="underline decoration-[#CBD5E1] underline-offset-4 hover:text-[#64748B]">
-              @raul_dronca
-            </a>{" "}
-            — Light Mode. Scenes are custom SVG/CSS.
-          </p>
         </div>
 
-        <footer className="mt-auto w-full pt-14">
-          <div className="border-b border-dashed border-[#DDE3EC] pb-7">
-            <p className="text-left text-[14px] font-[500] leading-[1.5] tracking-[-0.01em] text-[#111827]">
+        <footer className="mt-auto flex w-full justify-center pt-14">
+          <div className="w-full border-b border-dashed border-[#DDE3EC] pb-7 text-center">
+            <p className="text-center text-[14px] font-[500] leading-[1.5] tracking-[-0.01em] text-[#111827]">
               Weather Wizard © 2026 - Design + Code by{" "}
               <a
                 href="https://www.gadnex.us/"

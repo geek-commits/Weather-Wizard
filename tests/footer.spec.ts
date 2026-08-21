@@ -1,9 +1,9 @@
 import { test, expect } from "@playwright/test";
 
-test("footer redesign — ownership credit left-aligned with dashed divider", async ({ page }) => {
+test("footer redesign — centered ownership credit with dashed divider, no Inspora", async ({ page }) => {
   await page.goto("/");
 
-  // New footer exists and is left-aligned
+  // New footer exists and is centered
   const footer = page.locator("footer");
   await expect(footer).toBeVisible();
   await expect(footer).toHaveClass(/mt-auto/);
@@ -25,14 +25,12 @@ test("footer redesign — ownership credit left-aligned with dashed divider", as
   // Dashed divider
   const divider = footer.locator("div").first();
   await expect(divider).toHaveCSS("border-bottom-style", "dashed");
-  // Left alignment
+  // Centered alignment
   const p = footer.locator("p").first();
-  await expect(p).toHaveCSS("text-align", "left");
+  await expect(p).toHaveCSS("text-align", "center");
   await expect(p).toHaveCSS("font-size", "14px");
 
-  // Legacy removed
+  // Legacy and Inspora removed — page goes directly widget → footer
   await expect(page.getByText("Legacy snapshot preserved")).toHaveCount(0);
-
-  // Inspora credit still above footer
-  await expect(page.getByText("Visual reference: Inspora Weather Widget")).toBeVisible();
+  await expect(page.getByText("Visual reference: Inspora Weather Widget")).toHaveCount(0);
 });
