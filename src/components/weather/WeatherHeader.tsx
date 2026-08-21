@@ -1,6 +1,11 @@
-import { formatHeaderDate } from "../../lib/weatherMapping";
+import { formatCityHeaderDate, formatHeaderDate } from "../../lib/weatherMapping";
 import type { TemperatureUnit } from "../../types/weather";
 import { UnitToggle } from "./UnitToggle";
+
+function isCityUTCDate(d: Date): boolean {
+  // Real forecast dates are created as Date.UTC(..,12) so UTC noon
+  return d.getUTCHours() === 12 && d.getUTCDate() !== 0;
+}
 
 export function WeatherHeader({
   city,
@@ -23,7 +28,7 @@ export function WeatherHeader({
           {country ? <span className="font-[400] text-[#94A3B8]">, {country}</span> : null}
         </h2>
         <p className="mt-[6px] text-[13px] font-[450] tracking-[-0.01em] text-[#94A3B8] leading-none">
-          {formatHeaderDate(date)}
+          {isCityUTCDate(date) ? formatCityHeaderDate(date) : formatHeaderDate(date)}
         </p>
       </div>
       <UnitToggle unit={unit} onChange={onUnitChange} />
