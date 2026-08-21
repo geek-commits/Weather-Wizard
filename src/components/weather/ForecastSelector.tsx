@@ -100,7 +100,7 @@ export function ForecastSelector({
                 onClick={() => handleSelect(i)}
                 className={cn(
                   "relative z-[2] shrink-0 rounded-full px-[12px] py-[7px] text-[12.5px] font-[600] leading-none tracking-[-0.01em] whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0F172A]/20",
-                  active ? "text-[#0F172A]" : "text-[#8A94A8] hover:text-[#475569]"
+                  active ? "text-[#0F172A]" : "text-[#475569] hover:text-[#334155]"
                 )}
                 style={{
                   transition: "color 190ms cubic-bezier(0.22,1,0.36,1), background-color 190ms ease",

@@ -41,7 +41,7 @@ export function WeatherInformation({
           </p>
           {(humidity !== undefined || windSpeed !== undefined) && (
             <p
-              className="ww-info-line mt-1.5 text-[12px] font-[450] text-[#94A3B8] tracking-[-0.01em] leading-none"
+              className="ww-info-line mt-1.5 text-[12px] font-[450] text-[#475569] tracking-[-0.01em] leading-none"
               style={{ transitionDelay: "120ms" }}
             >
               {humidity !== undefined ? `Humidity ${humidity}%` : null}

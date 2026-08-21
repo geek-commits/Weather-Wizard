@@ -37,7 +37,7 @@ export function UnitToggle({
               "min-w-[36px] px-[10px] py-[4px] rounded-full text-[13px] font-[600] leading-none tracking-tight transition-[background-color,color,box-shadow,transform] duration-200 ease-out",
               active
                 ? "bg-white text-[#0F172A] shadow-[0_1px_6px_rgba(15,23,42,0.10),0_1px_2px_rgba(15,23,42,0.08)]"
-                : "bg-transparent text-[#94A3B8] hover:text-[#64748B]"
+                : "bg-transparent text-[#475569] hover:text-[#334155]"
             )}
           >
             {label}
