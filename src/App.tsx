@@ -50,10 +50,22 @@ export default function App() {
           </p>
         </div>
 
-        {/* footer accent */}
-        <div className="mt-auto pt-10 text-center">
-          <p className="text-[11px] tracking-wide text-[#CBD5E1]">Legacy snapshot preserved at <code className="text-[#94A3B8]">legacy/index.html</code></p>
-        </div>
+        <footer className="mt-auto w-full pt-14">
+          <div className="border-b border-dashed border-[#DDE3EC] pb-7">
+            <p className="text-left text-[14px] font-[500] leading-[1.5] tracking-[-0.01em] text-[#111827]">
+              Weather Wizard © 2026 - Design + Code by{" "}
+              <a
+                href="https://www.gadnex.us/"
+                target="_blank"
+                rel="noreferrer"
+                className="font-[600] text-[#2563EB] transition-colors duration-200 hover:text-[#1D4ED8]"
+              >
+                Gad Mollel
+              </a>
+              .
+            </p>
+          </div>
+        </footer>
       </main>
     </div>
   );
