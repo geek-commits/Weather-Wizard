@@ -1,14 +1,6 @@
 import type { ForecastDay, WeatherCondition, WeatherData } from "../types/weather";
 import { formatCityDayLabel, formatDayLabel, mapOpenWeatherToCondition } from "../lib/weatherMapping";
 
-const BASE = "https://api.openweathermap.org/data/2.5";
-
-function getApiKey(): string {
-  const key = import.meta.env.VITE_OPENWEATHER_API_KEY as string | undefined;
-  if (!key) throw new Error("Missing VITE_OPENWEATHER_API_KEY. Add it to your .env file.");
-  return key;
-}
-
 interface OWMWeatherResponse {
   name: string;
   sys: { country: string };
@@ -30,13 +22,11 @@ interface OWMForecastResponse {
 }
 
 export async function getWeather(city: string): Promise<WeatherData> {
-  const key = getApiKey();
-  const res = await fetch(
-    `${BASE}/weather?q=${encodeURIComponent(city)}&appid=${key}&units=metric`
-  );
+  const res = await fetch(`/api/weather?q=${encodeURIComponent(city)}`);
   if (!res.ok) {
     if (res.status === 404) throw new Error("We couldn't find that location. Try another city.");
-    if (res.status === 401) throw new Error("Invalid API key. Check VITE_OPENWEATHER_API_KEY.");
+    if (res.status === 401) throw new Error("Invalid API key.");
+    if (res.status === 500) throw new Error("Weather unavailable. Please try again.");
     throw new Error("Weather unavailable. Please try again.");
   }
   const data: OWMWeatherResponse = await res.json();
@@ -58,13 +48,10 @@ export async function getWeather(city: string): Promise<WeatherData> {
 }
 
 export async function getForecast(city: string): Promise<ForecastDay[]> {
-  const key = getApiKey();
-  const res = await fetch(
-    `${BASE}/forecast?q=${encodeURIComponent(city)}&appid=${key}&units=metric`
-  );
+  const res = await fetch(`/api/forecast?q=${encodeURIComponent(city)}`);
   if (!res.ok) {
-    // fallback to empty — caller will handle
     if (res.status === 404) throw new Error("We couldn't find that location. Try another city.");
+    if (res.status === 500) throw new Error("Forecast unavailable.");
     throw new Error("Forecast unavailable.");
   }
   const data: OWMForecastResponse = await res.json();

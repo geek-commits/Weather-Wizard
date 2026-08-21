@@ -43,34 +43,9 @@ export function useWeather() {
       const trimmed = nextCity.trim();
       if (!trimmed) return;
 
-      // prevent duplicate rapid requests for same city already loading
       const id = ++requestIdRef.current;
       setStatus("loading");
       setError(null);
-
-      const hasKey = !!import.meta.env.VITE_OPENWEATHER_API_KEY;
-      if (!hasKey) {
-        // demo mode: synthesize city with mock forecast but city name reflects input
-        await new Promise((r) => setTimeout(r, 420));
-        if (id !== requestIdRef.current) return;
-        const mock = mockForecast();
-        // vary mock slightly by city hash for demo realism
-        const hash = trimmed.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
-        const offset = ((hash % 5) - 2) * 2;
-        const varied = mock.map((d) => ({ ...d, temperature: d.temperature + offset }));
-        setCity(trimmed);
-        setCountry(undefined);
-        setForecast(varied);
-        setSelectedIndex(0);
-        setStatus("success");
-        setError(null);
-        try {
-          localStorage.setItem(LS_CITY, trimmed);
-        } catch {
-          // ignore
-        }
-        return;
-      }
 
       try {
         const [weather, fcast] = await Promise.all([getWeather(trimmed), getForecast(trimmed)]);
@@ -98,16 +73,8 @@ export function useWeather() {
     []
   );
 
-  // initial auto-load Dar es Salaam (or persisted) on mount if API configured
+  // initial auto-load — try live via /api, fallback to mock on offline/server failure
   useEffect(() => {
-    // if we started with mock, and API key exists, do real fetch once
-    const hasKey = !!import.meta.env.VITE_OPENWEATHER_API_KEY;
-    if (!hasKey) {
-      // demo: keep mock but set city to persisted
-      setStatus("success");
-      return;
-    }
-    // perform initial fetch silently, don't block UI
     let cancelled = false;
     const init = async () => {
       try {
@@ -122,7 +89,7 @@ export function useWeather() {
         setStatus("success");
       } catch {
         if (cancelled) return;
-        // keep mock forecast visible, but mark idle so user can retry
+        // controlled offline/server-failure fallback — keep mock
         setStatus("success");
       }
     };

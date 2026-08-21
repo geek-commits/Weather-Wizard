@@ -8,8 +8,6 @@ export default function App() {
   useCustomCursor(true);
   const { city, country, forecast, selectedIndex, setSelectedIndex, status, error, unit, setUnit, searchWeather } = useWeather();
 
-  const hasKey = !!import.meta.env.VITE_OPENWEATHER_API_KEY;
-
   return (
     <div className="min-h-screen bg-white">
       {/* generous whitespace - widget is the product */}
@@ -19,11 +17,6 @@ export default function App() {
           <h1 className="sr-only">Weather Wizard</h1>
           <WeatherWizardEntrance maxWidth={380} mode="sessionOnce" />
         </div>
-        {!hasKey && (
-          <p className="mb-6 max-w-[420px] text-center text-[12px] leading-[1.6] text-[#94A3B8]">
-            Demo mode — add <code className="rounded bg-[#F1F5F9] px-1 py-0.5 text-[#0F172A]">VITE_OPENWEATHER_API_KEY</code> to enable live data. City search still animates the scenes.
-          </p>
-        )}
 
         <div className="flex w-full flex-col items-center gap-6">
           <CitySearch onSearch={searchWeather} loading={status === "loading"} />
