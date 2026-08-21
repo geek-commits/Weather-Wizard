@@ -6,14 +6,15 @@ Modern, minimal weather widget — a close visual reconstruction of the **Inspor
 
 ## ✨ Features
 
+- Premium entrance — `weather-wizard-entrance.svg` 1.8s staged (wave→swoosh→wordmark→sweep) `sessionOnce` + `prefers-reduced-motion`
 - City search (Enter or button), persisted to `localStorage`
 - Live temperature (dominant typography), condition, humidity, wind
-- **Dynamic weather scenes** — custom SVG/CSS artwork per condition (Sunny / Partly Cloudy / Cloudy / Rain / Storm / Snow / Fog) with crossfade morph, not OpenWeather PNGs
-- **Forecast selector** — 5-day horizontal pill tabs; selecting a day morphs the entire visual scene + header date
+- **Dynamic weather scenes** — custom SVG/CSS artwork per condition (Sunny / Partly Cloudy / Cloudy / Rain / Storm / Snow / Fog) with Premium triple-layer morph `520ms signature` (scale+opacity / blur / glow drift)
+- **Forecast selector** — 5-day horizontal pill tabs micro-cascade `22ms` per pill; selecting a day morphs scene + staged temp/condition cascade
 - **°F / °C segmented toggle** (persisted) with white pill active state
 - Responsive from 320px to 1920px, intentional 380px widget centered in generous whitespace
 - Loading skeletons that preserve geometry, designed empty/error states
-- Keyboard + screen-reader accessible, `prefers-reduced-motion` respected
+- Keyboard + screen-reader accessible, `prefers-reduced-motion` respected throughout
 - Demo mode when no API key is set (mock forecast, city still updates)
 
 ## 🛠 Tech Stack
@@ -32,20 +33,21 @@ weather-wizard/
 ├── legacy/index.html            # original single-file snapshot
 ├── public/favicon.svg
 ├── src/
+│   ├── components/brand/WeatherWizardEntrance.tsx # 1.8s entrance (wave/swoosh/wordmark/sweep)
 │   ├── components/weather/
 │   │   ├── WeatherWidget.tsx    # composition, stable geometry, a11y region
 │   │   ├── WeatherHeader.tsx    # city + date + UnitToggle
 │   │   ├── UnitToggle.tsx       # segmented °F/°C
-│   │   ├── WeatherScene.tsx     # router → Sunny/PartlyCloudy/Cloudy/Rain/Storm/Snow/Fog
+│   │   ├── WeatherScene.tsx     # router → Sunny/PartlyCloudy/Cloudy/Rain/Storm/Snow/Fog (Premium morph)
 │   │   ├── WeatherScene/*.tsx   # SVG + gradients + blur scenes
-│   │   ├── WeatherInformation.tsx
+│   │   ├── WeatherInformation.tsx # staged temp/line/icon
 │   │   ├── WeatherIcon.tsx
-│   │   └── ForecastSelector.tsx
+│   │   └── ForecastSelector.tsx # micro-cascade
 │   ├── components/search/CitySearch.tsx  # external to widget, minimal
-│   ├── hooks/useWeather.ts      # idle|loading|success|error + localStorage
-│   ├── services/weatherApi.ts   # normalized WeatherData, forecast aggregation
+│   ├── hooks/useWeather.ts, useReducedMotion.ts
+│   ├── services/weatherApi.ts   # normalized WeatherData, forecast aggregation (city TZ + mode)
 │   ├── types/weather.ts
-│   ├── lib/utils.ts, weatherMapping.ts, unit.ts
+│   ├── lib/utils.ts, weatherMapping.ts, unit.ts, motion.ts
 │   ├── App.tsx
 │   ├── main.tsx
 │   └── index.css
@@ -105,7 +107,8 @@ Last city and unit are restored on reload.
 
 - **Widget geometry:** ~380px, `rounded-[30px]`, `1px rgba(0,0,0,0.06)` border, diffuse `0 20px 60px rgba(15,23,42,0.08)` shadow, surface `#F3F4F8` on `#FFFFFF` page.
 - **Typography:** Inter, temperature `64-68px` weight 520 `tracking -0.06em tabular-nums`; condition `14px` medium; header `18px` semi-bold.
-- **Scenes:** SVG ellipses/circles + radial gradients + `blur()`; transitions `520ms cubic-bezier(0.2,0.8,0.2,1)` on `opacity/transform/blur`.
+- **Motion:** Premium `signature 0.22,1,0.36,1` — entrance `1.8s`, scene `520ms` (scale+opacity) + `420ms` blur + ambient drift; info `380ms temp` + `260ms` lines stagger `60/120ms`; forecast `22ms` cascade, `quick 160ms` toggle, three layers every animation, 1/3 rules.
+- **Scenes:** SVG ellipses/circles + radial gradients + `blur()`; transitions `520ms signature` on `opacity/transform/blur`.
 - **No dashboard chrome:** navbar/sidebar/footer deliberately omitted — widget *is* the product.
 
 ## 🔒 Legacy
