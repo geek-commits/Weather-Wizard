@@ -38,9 +38,8 @@ export function ForecastGlassThumb({ x, width, height, radius = 9999, disabled, 
       <style>{`@supports (backdrop-filter: url(#x)) or (-webkit-backdrop-filter: url(#x)) { .ww-glass-fallback{display:none !important} .ww-glass-enhanced{display:block !important} }`}</style>
       <div
         aria-hidden
-        className="pointer-events-none absolute top-1/2 -translate-y-1/2"
+        className="pointer-events-none absolute left-0 top-1/2"
         style={{
-          left: 0,
           width,
           height,
           borderRadius: radius,

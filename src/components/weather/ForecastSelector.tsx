@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { ForecastDay } from "../../types/weather";
 import { cn } from "../../lib/utils";
 import { ForecastGlassThumb } from "./ForecastGlassThumb";
@@ -18,40 +18,43 @@ export function ForecastSelector({
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const [thumb, setThumb] = useState<ThumbGeometry>({ x: 0, width: 0, height: 0 });
   const [hasMeasured, setHasMeasured] = useState(false);
+  const selectedIndexRef = useRef(selectedIndex);
 
-  const measure = () => {
+  useLayoutEffect(() => {
+    selectedIndexRef.current = selectedIndex;
+  }, [selectedIndex]);
+
+  const measure = useCallback(() => {
     const track = trackRef.current;
-    const btn = tabRefs.current[selectedIndex];
+    const btn = tabRefs.current[selectedIndexRef.current];
     if (!track || !btn) return;
-    // Use offsetLeft/Width because thumb lives in same positioned container
     const x = btn.offsetLeft;
     const width = btn.offsetWidth;
     const height = btn.offsetHeight;
     setThumb({ x, width, height });
     setHasMeasured(true);
-  };
+  }, []);
 
   useLayoutEffect(() => {
+    selectedIndexRef.current = selectedIndex;
     measure();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedIndex, days.length]);
+  }, [selectedIndex, days.length, measure]);
 
   useEffect(() => {
     const track = trackRef.current;
     if (!track) return;
-    const observer = new ResizeObserver(() => measure());
+    const observer = new ResizeObserver(measure);
     observer.observe(track);
-    // observe each tab as fallback
-    tabRefs.current.forEach((el) => el && observer.observe(el));
+    tabRefs.current.forEach((tab) => {
+      if (tab) observer.observe(tab);
+    });
     window.addEventListener("resize", measure);
-    // fonts settle
     if (document.fonts?.ready) document.fonts.ready.then(measure);
     return () => {
       observer.disconnect();
       window.removeEventListener("resize", measure);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [measure, days.length]);
 
   useEffect(() => {
     // scroll active into view when selection changes via user
@@ -88,8 +91,8 @@ export function ForecastSelector({
                 aria-selected={active}
                 onClick={() => onSelect(i)}
                 className={cn(
-                  "relative z-[2] shrink-0 px-[12px] py-[7px] rounded-full text-[12.5px] leading-none tracking-[-0.01em] whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0F172A]/20",
-                  active ? "text-[#0F172A] font-[600]" : "text-[#8A94A8] font-[500] hover:text-[#475569]"
+                  "relative z-[2] shrink-0 rounded-full px-[12px] py-[7px] text-[12.5px] font-[600] leading-none tracking-[-0.01em] whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0F172A]/20",
+                  active ? "text-[#0F172A]" : "text-[#8A94A8] hover:text-[#475569]"
                 )}
                 style={{
                   transition: "color 190ms cubic-bezier(0.22,1,0.36,1), background-color 190ms ease",
