@@ -17,9 +17,6 @@ test.describe("Forecast Glass — Fixes 1-4", () => {
     // wait for glass slide 460ms + width 420ms
     await page.waitForTimeout(600);
 
-    // glass thumb is the element with backdrop-filter / glass class
-    const glass = page.locator(".ww-glass-fallback").first().locator(".."); // the thumb container
-    // Actually thumb is parent with pointer-events-none left-0 top-1/2
     const thumb = page.locator('[aria-hidden="true"].pointer-events-none.absolute.left-0').first();
     await expect(thumb).toBeVisible();
 

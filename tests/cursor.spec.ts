@@ -1,18 +1,17 @@
 import { test, expect } from "@playwright/test";
 
 test.describe("Custom Cursor — Desktop fine-pointer", () => {
-  test("applies 28x28 black/white SVG cursor 5 4 and restores input", async ({ page }) => {
+  test("applies 48x48 arrowhead SVG cursor 4 0 and restores input", async ({ page }) => {
     await page.goto("/");
     const html = page.locator("html");
     await expect(html).toHaveAttribute("data-custom-cursor", "true");
 
-    // Verify data URI contains encoded SVG with hotspot 5 4
+    // Verify data URI contains encoded SVG with hotspot 4 0
     const cursorVar = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--custom-cursor"));
     expect(cursorVar).toContain("data:image/svg+xml");
-    expect(cursorVar).toContain("5 4");
+    expect(cursorVar).toContain("4 0");
     // Check computed cursor on body includes custom
     const bodyCursor = await page.evaluate(() => getComputedStyle(document.body).cursor);
-    // In Chromium, computed cursor will be the custom url() value
     expect(bodyCursor).not.toBe("auto");
 
     // Input should revert to native (text/auto) — not custom
@@ -22,24 +21,21 @@ test.describe("Custom Cursor — Desktop fine-pointer", () => {
       const el = document.getElementById("city-search") as HTMLElement | null;
       return el ? getComputedStyle(el).cursor : null;
     });
-    // Input cursor should not be the custom data URI (should be text/auto)
     expect(inputCursor).not.toContain("data:image/svg+xml");
 
-    // Verify hotspot via CDP — cursor image is 28x28 and path has black fill white stroke
+    // Verify new arrowhead SVG: 48x48 viewBox 24, black fill, no white stroke/shadow
     const svgDecoded = await page.evaluate(() => {
       const v = getComputedStyle(document.documentElement).getPropertyValue("--custom-cursor");
       const m = v.match(/data:image\/svg\+xml,([^)]+)/);
       if (!m) return null;
       return decodeURIComponent(m[1]);
     });
-    expect(svgDecoded).toContain('width="28"');
-    expect(svgDecoded).toContain('viewBox="0 0 28 28"');
-    expect(svgDecoded).toContain('fill="black"');
-    expect(svgDecoded).toContain('stroke="white"');
-    expect(svgDecoded).toContain('stroke-width="2.05556"');
-    // shadow filter present
-    expect(svgDecoded).toContain("feGaussianBlur");
-    expect(svgDecoded).toContain('stdDeviation="2"');
+    expect(svgDecoded).toContain("48");
+    expect(svgDecoded).toContain("24");
+    expect(svgDecoded).toContain("M4.5.79");
+    expect(svgDecoded).toContain("#000");
+    expect(svgDecoded).not.toContain('stroke="white"');
+    expect(svgDecoded).not.toContain("feGaussianBlur");
   });
 
   test("does not force custom on coarse pointer (touch)", async ({ browser }) => {
@@ -51,10 +47,7 @@ test.describe("Custom Cursor — Desktop fine-pointer", () => {
     const page = await context.newPage();
     await page.goto("/");
     // Even with data-custom-cursor, CSS @media (hover:hover/pointer:fine) should not apply on touch
-    // So we check that the media query does not match
-    const isFine = await page.evaluate(() => window.matchMedia("(hover: hover) and (pointer: fine)").matches);
-    // On emulated touch, should be false
-    // If we force hasTouch, pointer is coarse, so custom should not be applied via CSS (but attribute still present)
+    await page.evaluate(() => window.matchMedia("(hover: hover) and (pointer: fine)").matches);
     expect(await page.locator("html").getAttribute("data-custom-cursor")).toBe("true");
     // The computed cursor for body should be auto/text, not custom, because media query blocks
     // This is expected to be not custom in this emulation
