@@ -5,12 +5,22 @@ export function mapOpenWeatherToCondition(
   description: string,
   icon: string
 ): WeatherCondition {
+  // Primary truth: OWM icon prefix is unambiguous
+  const code = icon.slice(0, 2);
+  if (code === "01") return "sunny"; // 01d/01n clear
+  if (code === "02") return "partly-cloudy"; // 02d/02n few clouds
+  if (code === "03" || code === "04") return "cloudy"; // scattered/broken
+  if (code === "09" || code === "10") return "rain"; // shower/rain
+  if (code === "11") return "storm"; // thunderstorm
+  if (code === "13") return "snow";
+  if (code === "50") return "fog"; // mist/haze/fog
+
   const m = main.toLowerCase();
   const d = description.toLowerCase();
 
   if (m === "clear") return "sunny";
   if (m === "clouds") {
-    if (d.includes("few") || icon === "02d" || icon === "02n") return "partly-cloudy";
+    if (d.includes("few")) return "partly-cloudy";
     return "cloudy";
   }
   if (m === "drizzle" || m === "rain") return "rain";
