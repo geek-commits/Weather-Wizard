@@ -2,6 +2,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react
 import type { ForecastDay } from "../../types/weather";
 import { cn } from "../../lib/utils";
 import { ForecastGlassThumb } from "./ForecastGlassThumb";
+import { useSound } from "../../hooks/useSound";
 
 type ThumbGeometry = { x: number; width: number; height: number };
 
@@ -19,6 +20,7 @@ export function ForecastSelector({
   const [thumb, setThumb] = useState<ThumbGeometry>({ x: 0, width: 0, height: 0 });
   const [hasMeasured, setHasMeasured] = useState(false);
   const selectedIndexRef = useRef(selectedIndex);
+  const playSelect = useSound("select");
 
   useLayoutEffect(() => {
     selectedIndexRef.current = selectedIndex;
@@ -34,6 +36,12 @@ export function ForecastSelector({
     setThumb({ x, width, height });
     setHasMeasured(true);
   }, []);
+
+  const handleSelect = (index: number) => {
+    if (index === selectedIndex) return;
+    playSelect();
+    onSelect(index);
+  };
 
   useLayoutEffect(() => {
     selectedIndexRef.current = selectedIndex;
@@ -89,7 +97,7 @@ export function ForecastSelector({
                 }}
                 role="tab"
                 aria-selected={active}
-                onClick={() => onSelect(i)}
+                onClick={() => handleSelect(i)}
                 className={cn(
                   "relative z-[2] shrink-0 rounded-full px-[12px] py-[7px] text-[12.5px] font-[600] leading-none tracking-[-0.01em] whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0F172A]/20",
                   active ? "text-[#0F172A]" : "text-[#8A94A8] hover:text-[#475569]"

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Search, Loader2 } from "lucide-react";
+import { useSound } from "../../hooks/useSound";
 
 export function CitySearch({
   onSearch,
@@ -9,10 +10,12 @@ export function CitySearch({
   loading: boolean;
 }) {
   const [value, setValue] = useState("");
+  const playSubmit = useSound("pressSoft");
 
   const submit = () => {
     const city = value.trim();
     if (!city) return;
+    playSubmit();
     onSearch(city);
   };
 

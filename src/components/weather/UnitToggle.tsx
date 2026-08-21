@@ -1,5 +1,6 @@
 import type { TemperatureUnit } from "../../types/weather";
 import { cn } from "../../lib/utils";
+import { useSound } from "../../hooks/useSound";
 
 export function UnitToggle({
   unit,
@@ -8,6 +9,14 @@ export function UnitToggle({
   unit: TemperatureUnit;
   onChange: (u: TemperatureUnit) => void;
 }) {
+  const playOn = useSound("toggleOn");
+  const playOff = useSound("toggleOff");
+  const handleChange = (next: TemperatureUnit) => {
+    if (next === unit) return;
+    if (next === "celsius") playOn();
+    else playOff();
+    onChange(next);
+  };
   return (
     <div
       role="group"
@@ -23,7 +32,7 @@ export function UnitToggle({
             type="button"
             aria-pressed={active}
             aria-label={`Switch to ${label}`}
-            onClick={() => onChange(u)}
+            onClick={() => handleChange(u)}
             className={cn(
               "min-w-[36px] px-[10px] py-[4px] rounded-full text-[13px] font-[600] leading-none tracking-tight transition-all duration-200",
               active

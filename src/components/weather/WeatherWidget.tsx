@@ -4,6 +4,7 @@ import { WeatherHeader } from "./WeatherHeader";
 import { WeatherScene } from "./WeatherScene";
 import { WeatherInformation } from "./WeatherInformation";
 import { ForecastSelector } from "./ForecastSelector";
+import { useSound } from "../../hooks/useSound";
 
 export function WeatherWidget({
   city,
@@ -39,6 +40,7 @@ export function WeatherWidget({
   const displayCity = city || "Weather";
   const displayCountry = country;
   const displayDate = selected?.date ?? new Date();
+  const playRetry = useSound("pressSoft");
 
   // Day-aware scene transition metadata
   const sceneKey = selected ? `${selected.date.toISOString()}-${selected.condition}` : `empty-${selectedIndex}`;
@@ -121,7 +123,10 @@ export function WeatherWidget({
             <p className="text-[15px] font-[600] tracking-[-0.02em] text-[#0F172A]">Weather unavailable</p>
             <p className="mt-1.5 text-[13px] leading-[1.5] text-[#64748B] max-w-[260px] mx-auto">{error}</p>
             <button
-              onClick={onRetry}
+              onClick={() => {
+                playRetry();
+                onRetry();
+              }}
               className="mt-4 inline-flex items-center justify-center rounded-full bg-[#0F172A] px-5 py-[9px] text-[13px] font-[600] text-white shadow-sm hover:bg-[#1E293B] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0F172A] focus-visible:ring-offset-2"
             >
               Try again
