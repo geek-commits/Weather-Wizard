@@ -46,24 +46,22 @@ export function ForecastGlassThumb({ x, width, height, radius = 9999, disabled, 
           transform: `translate3d(${x}px, -50%, 0)`,
           opacity: hasMeasured ? 1 : 0,
           visibility: hasMeasured ? "visible" : "hidden",
-          // Layer 2 tint + Layer 3 specular + outer elevation — locked: 0.48, blur 11px, radius 9999
-          background: "rgba(255,255,255,0.48)",
-          boxShadow:
-            "inset 0 1px 0 rgba(255,255,255,0.90), inset 0 -1px 0 rgba(255,255,255,0.28), inset 1px 0 0 rgba(255,255,255,0.30), inset -1px 0 0 rgba(255,255,255,0.30), 0 8px 24px rgba(15,23,42,0.08), 0 2px 8px rgba(15,23,42,0.06)",
-          border: "1px solid rgba(255,255,255,0.65)",
+          background: "rgba(255,255,255,0.28)",
+          boxShadow: "inset 0 1px 0 rgba(255,255,255,0.92), inset 0 -1px 0 rgba(255,255,255,0.18), 0 6px 18px rgba(15,23,42,0.055)",
+          border: "1px solid rgba(255,255,255,0.72)",
           willChange: "transform, width",
           transition: hasMeasured
             ? "transform 460ms cubic-bezier(0.22,1,0.36,1), width 420ms cubic-bezier(0.22,1,0.36,1), opacity 150ms ease-out"
             : undefined,
         }}
       >
-        {/* Refraction / blur layer — Chromium enhanced + fallback */}
+        {/* Refraction / blur layer — tuned 9px 1.03, ambient motion handled in WeatherScene */}
         <div
           className="ww-glass-fallback absolute inset-0"
           style={{
             borderRadius: radius,
-            backdropFilter: `blur(11px) brightness(1.04) saturate(1.10)`,
-            WebkitBackdropFilter: `blur(11px) brightness(1.04) saturate(1.10)`,
+            backdropFilter: `blur(9px) brightness(1.03) saturate(1.10)`,
+            WebkitBackdropFilter: `blur(9px) brightness(1.03) saturate(1.10)`,
           }}
         />
         {/* Chromium refraction enhancement */}
@@ -71,8 +69,8 @@ export function ForecastGlassThumb({ x, width, height, radius = 9999, disabled, 
           className="ww-glass-enhanced absolute inset-0 hidden"
           style={{
             borderRadius: radius,
-            backdropFilter: `blur(11px) url(#${filterId}) brightness(1.04) saturate(1.15)`,
-            WebkitBackdropFilter: `blur(11px) url(#${filterId}) brightness(1.04) saturate(1.15)`,
+            backdropFilter: `blur(9px) url(#${filterId}) brightness(1.03) saturate(1.14)`,
+            WebkitBackdropFilter: `blur(9px) url(#${filterId}) brightness(1.03) saturate(1.14)`,
           }}
           aria-hidden
         />

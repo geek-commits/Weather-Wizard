@@ -106,7 +106,7 @@ test.describe("Forecast Glass — Fixes 1-4", () => {
     });
     expect(style).not.toBeNull();
     expect(style!.borderRadius).toContain("9999px");
-    expect(style!.backgroundColor).toMatch(/rgba\(255,\s*255,\s*255,\s*0\.48\)/);
+    expect(style!.backgroundColor).toMatch(/rgba\(255,\s*255,\s*255,\s*0\.28\)/);
     await cdp.detach();
   });
 });
