@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather App</title>
+    <style>
+      :root {
+        --bg-default: #e6f2ff;
+        --container-default: #ffffff;
+        --text-default: #333;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 400px;
+        margin: 0 auto;
+        padding: 20px;
+        text-align: center;
+        background-color: var(--bg-default);
+        color: var(--text-default);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        transition: all 0.5s ease;
+      }
+      #weather-container {
+        background-color: var(--container-default);
+        border-radius: 20px; /* Increased border radius */
+        padding: 40px; /* Increased padding */
+        box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 380px; /* Slightly wider */
+        transition: all 0.5s ease;
+      }
+      h1 {
+        color: var(--text-default);
+        margin-bottom: 30px; /* Increased margin */
+        font-size: 24px;
+      }
+      #search-wrapper {
+        display: flex;
+        gap: 10px; /* Space between input and button */
+        margin-bottom: 25px;
+      }
+      #city-input {
+        flex-grow: 1;
+        padding: 18px; /* Increased padding */
+        border: 2px solid #3498db;
+        border-radius: 12px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      #city-input:focus {
+        outline: none;
+        border-color: #2980b9;
+        box-shadow: 0 6px 8px rgba(52, 152, 219, 0.2);
+      }
+      #search-btn {
+        padding: 18px 25px; /* Increased padding */
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      #search-btn:hover {
+        background-color: #2980b9;
+        transform: translateY(-2px);
+      }
+      #weather-info {
+        margin-top: 30px; /* Increased margin */
+        background-color: rgba(255, 255, 255, 0.7);
+        border-radius: 15px;
+        padding: 25px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="weather-container">
+      <h1>Weather App</h1>
+      <div id="search-wrapper">
+        <input type="text" id="city-input" placeholder="Enter city name" />
+        <button id="search-btn">Search</button>
+      </div>
+      <div id="weather-info"></div>
+      <div id="error-message"></div>
+    </div>
+
+    <script>
+      const API_KEY = "YOUR_OPENWEATHERMAP_API_KEY"; // Replace with your actual API key
+      const cityInput = document.getElementById("city-input");
+      const searchBtn = document.getElementById("search-btn");
+      const weatherInfo = document.getElementById("weather-info");
+      const errorMessage = document.getElementById("error-message");
+
+      // Add event listener for Enter key
+      cityInput.addEventListener("keypress", (event) => {
+        if (event.key === "Enter") {
+          const city = cityInput.value.trim();
+          if (city) {
+            fetchWeather(city);
+          } else {
+            showError("Please enter a city name");
+          }
+        }
+      });
+
+      searchBtn.addEventListener("click", () => {
+        const city = cityInput.value.trim();
+        if (city) {
+          fetchWeather(city);
+        } else {
+          showError("Please enter a city name");
+        }
+      });
+
+      async function fetchWeather(city) {
+        try {
+          const response = await fetch(
+            `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`
+          );
+
+          if (!response.ok) {
+            throw new Error("City not found");
+          }
+
+          const data = await response.json();
+          displayWeather(data);
+        } catch (error) {
+          showError(error.message);
+        }
+      }
+
+      function displayWeather(data) {
+        const temp = Math.round(data.main.temp);
+        const feelsLike = Math.round(data.main.feels_like);
+        const description = data.weather[0].description;
+        const icon = data.weather[0].icon;
+        const humidity = data.main.humidity;
+        const windSpeed = data.wind.speed;
+
+        weatherInfo.innerHTML = `
+                <h2>${data.name}, ${data.sys.country}</h2>
+                <img src="https://openweathermap.org/img/wn/${icon}@2x.png" alt="Weather Icon">
+                <div class="weather-detail">
+                    <i class="fas fa-temperature-high"></i>
+                    <p>Temperature: ${temp}°C</p>
+                </div>
+                <div class="weather-detail">
+                    <i class="fas fa-temperature-low"></i>
+                    <p>Feels Like: ${feelsLike}°C</p>
+                </div>
+                <div class="weather-detail">
+                    <i class="fas fa-cloud"></i>
+                    <p>Description: ${description}</p>
+                </div>
+                <div class="weather-detail">
+                    <i class="fas fa-tint"></i>
+                    <p>Humidity: ${humidity}%</p>
+                </div>
+                <div class="weather-detail">
+                    <i class="fas fa-wind"></i>
+                    <p>Wind Speed: ${windSpeed} m/s</p>
+                </div>
+            `;
+        errorMessage.textContent = "";
+      }
+
+      function showError(message) {
+        weatherInfo.innerHTML = "";
+        errorMessage.textContent = message;
+      }
+    </script>
+  </body>
+</html>
